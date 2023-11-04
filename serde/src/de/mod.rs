@@ -338,7 +338,7 @@ pub enum Unexpected<'a> {
 
     /// The input contained an unsigned integer `u8`, `u16`, `u32` or `u64` that
     /// was not expected.
-    Unsigned(u64),
+    Unsigned(u128),
 
     /// The input contained a signed integer `i8`, `i16`, `i32` or `i64` that
     /// was not expected.
@@ -1411,14 +1411,16 @@ pub trait Visitor<'de>: Sized {
         self.visit_u64(v as u64)
     }
 
-    /// The input contains a `u64`.
+    /// The input contains a `u128`.
     ///
-    /// The default implementation fails with a type error.
+    /// The default implementation forwards to [`visit_u128`].
+    ///
+    /// [`visit_u128`]: #method.visit_u128
     fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
     where
         E: Error,
     {
-        Err(Error::invalid_type(Unexpected::Unsigned(v), &self))
+        self.visit_u128(v as u128)
     }
 
     /// The input contains a `u128`.
